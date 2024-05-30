@@ -21,5 +21,6 @@ from reservation import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('cost/<int:reservation_id>/', views.cost, name='cost'), 
+    path('cost/', views.cost, name='cost'), 
+    path('cost/<int:reservation_id>/', views.costid, name='costid'), 
 ]
