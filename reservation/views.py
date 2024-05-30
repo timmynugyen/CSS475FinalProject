@@ -1,13 +1,14 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from .models import Reservation
 
 def index(request):
-    return HttpResponse(f"This is the view section <a href='cost'>click to go to cost</a>")
+    return render(request, "index.html")
+    return HttpResponse(f"")
 
 # list all ids
 def cost(request):
-    return HttpResponse(f"some reservations may not exist...<br>This is the view section <a href='0'>reservation 0</a><br>This is the view section <a href='1'>reservation 1</a><br><br>This is the view section <a href='2'>reservation 2</a><br>")
+    return render(request, "cost.html")
 
 # specific id
 def costid(request, reservation_id):
