@@ -2,9 +2,13 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from .models import Reservation
 
+#Timmy
+#directs to frontpage
+def frontpage(request):
+    return render(request, "frontpage.html")
+
 def index(request):
     return render(request, "index.html")
-
 
 def cost(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
