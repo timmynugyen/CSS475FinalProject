@@ -28,13 +28,13 @@ class TimeSlot(models.Model):
     end_time = models.DateTimeField()
     
     def getStartTime(self):
-        return self.start_time
+        return self.start_time.strftime("%Y-%m-%d %H:%M")
     
     def getEndTime(self):
-        return self.end_time
+        return self.end_time.strftime("%Y-%m-%d %H:%M") 
     
     def __str__(self):
-        return f"Starts: {self.start_time}, Ends: {self.end_time}"
+        return f"Starts: {self.getStartTime()}, Ends: {self.getEndTime()}"
 
 class RoomOption(models.Model):
     class RoomTypes(models.IntegerChoices):
