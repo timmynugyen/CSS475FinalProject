@@ -4,7 +4,6 @@ from .models import Reservation
 
 def index(request):
     return render(request, "index.html")
-    return HttpResponse(f"")
 
 # list all ids
 def cost(request):
@@ -15,4 +14,4 @@ def costid(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
     print(reservation)
     total_cost = reservation.cost()
-    return HttpResponse(f"The total cost for reservation {reservation_id} is ${total_cost:.2f}")
+    return HttpResponse(f"The total cost for reservation {reservation_id} is ${total_cost:.2f}<br><a href='..'>go back</a>")
