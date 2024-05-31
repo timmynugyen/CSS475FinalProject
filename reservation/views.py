@@ -2,10 +2,20 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from .models import Reservation
 
-#Timmy
-#directs to frontpage
+#Timmy: shows frontpage and gathers form information
 def frontpage(request):
-    return render(request, "frontpage.html")
+    if request.method == 'POST':
+        form = Frontpage(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('submitted')
+    else:
+        form = Frontpage()
+    return render(request, "frontpage.html", {'form': form})
+
+#Timmy: redirects to submitted page
+def submitted(request):
+    return render(request, "submitted.html")
 
 def index(request):
     return render(request, "index.html")
