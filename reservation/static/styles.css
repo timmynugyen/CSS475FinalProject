@@ -45,21 +45,19 @@ body {
   }
   
   input {
-    margin: 10px 0 0 0;
-    width: 100%;
-    min-height: 2em;
-  }
-  
-  input {
     background-color: #0a0a23;
     border: 1px solid #0a0a23;
     color: #ffffff;
+    margin: 10px 0 0 0;
+    width: 100%;
+    min-height: 2em;
   }
   
   .inline {
     width: unset;
     margin: 0 0.5em 0 0;
     vertical-align: middle;
+    display: inline; 
   }
   
   input[type="submit"] {
@@ -71,11 +69,5 @@ body {
     background-color: #3b3b4f;
     border-color: white;
     min-width: 300px;
+    cursor:pointer;
   }
-  
-  .inline{
-    display: inline; 
-  }
-  
-  
-  
