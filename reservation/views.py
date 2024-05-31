@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from .models import Reservation
+from .forms import Frontpage
 
 #Timmy: shows frontpage and gathers form information
 def frontpage(request):
