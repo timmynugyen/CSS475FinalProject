@@ -22,6 +22,6 @@ from reservation import views
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=True)),
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views.frontpage, name='frontpage'),
     path('cost/<int:reservation_id>/', views.cost, name='cost'), 
 ]
