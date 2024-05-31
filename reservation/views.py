@@ -5,13 +5,11 @@ from .models import Reservation
 def index(request):
     return render(request, "index.html")
 
-# list all ids
-def cost(request):
-    return render(request, "cost.html")
 
-# specific id
-def costid(request, reservation_id):
+def cost(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
-    print(reservation)
     total_cost = reservation.cost()
-    return HttpResponse(f"The total cost for reservation {reservation_id} is ${total_cost:.2f}<br><a href='..'>go back</a>")
+    reservations_page_url = '/admin/reservation/reservation/'
+    return HttpResponse(
+        f"The total cost for reservation {reservation_id} is ${total_cost:.2f}<br>"
+        f"<a href='{reservations_page_url}'>Go back to reservations</a>")
