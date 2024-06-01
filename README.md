@@ -10,6 +10,8 @@ Here is how to run the the database locally:
 
 Go to the link listed (it should probably be http://127.0.0.1:8000/ or http://127.0.0.1:8080/)
 
+To access the admin section, go to the subdirectory /admin of the link. Login information should be displayed. The user is "admin", password is "pass123word456".
+
 ## Function definitions
 
 **Customer** 
