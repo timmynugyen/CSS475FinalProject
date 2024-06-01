@@ -1,8 +1,16 @@
 # CSS475FinalProject
 Pool Reservation
 
+## Running the code
+Here is how to run the the database locally:
 
-# Function definitions
+      git clone https://github.com/timmynugyen/CSS475FinalProject/edit/main/README.md
+      cd CSS475FinalProject
+      python manage.py runserver
+
+Go to the link listed (it should probably be http://127.0.0.1:8000/ or http://127.0.0.1:8080/)
+
+## Function definitions
 
 **Customer** 
       A model representing a customer.
