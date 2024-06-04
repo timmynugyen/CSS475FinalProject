@@ -59,6 +59,11 @@ class Frontpage(forms.ModelForm):
         label="Pool Special Orders"
     )
 
+    is_exclusive = forms.BooleanField(
+        required=False,
+        label="Exclusive Reservation"
+    )
+
     class Meta:
         model = Customer
         fields = ['first_name', 'last_name', 'email', 'phone_number']
