@@ -24,7 +24,7 @@ def frontpage(request):
             input_pool_special_orders = form.cleaned_data.get('pool_special_orders')
             input_is_exclusive = form.cleaned_data.get('is_exclusive')
 
-            input_customer = Customer.objects.get_or_create(
+            input_customer, created = Customer.objects.get_or_create(
                 first_name = input_first_name,
                 last_name = input_last_name,
                 email = input_email,
@@ -66,17 +66,19 @@ def frontpage(request):
             
             service = Service.objects.create()
             service.service_type.add(service_type)
+            service.save()
 
             #TODO
             # Create reservation object from gather info above
             reservation = Reservation.objects.create(
                 customer = input_customer,
                 timeslot = input_timeslot,
-                is_exclusive = True,
-                service = service
+                is_exclusive = input_is_exclusive
             )
-
-            return redirect('submitted')
+            reservation.service.add(service)
+            reservation.save()
+            
+            return redirect('submitted', reservation_id=reservation.id)
     else:
         #TODO
         #Display error message/error page saying reservation info is incorrect/already exists
@@ -85,8 +87,18 @@ def frontpage(request):
     return render(request, "frontpage.html", {'form': form})
 
 #Timmy: redirects to submitted page
-def submitted(request):
-    return render(request, "submitted.html")
+#Adonyas: modified the code to display relevant information.
+def submitted(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    total_cost = reservation.cost()  # Ensure this method exists and returns the cost
+
+    context = {
+        'total_cost': total_cost,
+        'reservation': reservation,
+        'message': "Bring the total cost amount when you come to your reservation. We accept cash, debit, and credit cards."
+    }
+
+    return render(request, "submitted.html", context)
 
 def index(request):
     return render(request, "index.html")
