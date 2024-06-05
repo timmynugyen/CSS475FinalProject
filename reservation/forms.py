@@ -70,8 +70,8 @@ class Frontpage(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(Frontpage, self).__init__(*args, **kwargs)
-        self.fields['room_name'].choices = RoomOption.objects.all().values_list('id', 'room_name')
-        self.fields['pool_name'].choices = PoolOption.objects.all().values_list('id', 'pool_name')
+        self.fields['room_name'].choices = RoomOption.RoomTypes.choices
+        self.fields['pool_name'].choices = PoolOption.PoolTypes.choices
 
     def clean(self):
         cleaned_data = super().clean()
