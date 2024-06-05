@@ -68,8 +68,7 @@ def frontpage(request):
             service.service_type.add(service_type)
             service.save()
 
-            #TODO
-            # Create reservation object from gather info above
+            #takes all info and creates reservation
             reservation = Reservation.objects.create(
                 customer = input_customer,
                 timeslot = input_timeslot,
@@ -79,9 +78,11 @@ def frontpage(request):
             reservation.save()
             
             return redirect('submitted', reservation_id=reservation.id)
+        else:
+            #returns error page if any errors thrown
+            errors = form.errors.get('__all__', [])
+            return render(request, 'error.html', {'errors': errors})
     else:
-        #TODO
-        #Display error message/error page saying reservation info is incorrect/already exists
         form = Frontpage()
         
     return render(request, "frontpage.html", {'form': form})

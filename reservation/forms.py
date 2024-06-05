@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Customer, RoomOption, PoolOption
+from .models import Customer, RoomOption, PoolOption, TimeSlot
 
 class Frontpage(forms.ModelForm):
     ServiceChoices = [
@@ -28,7 +28,7 @@ class Frontpage(forms.ModelForm):
     )
 
     room_name = forms.ChoiceField(
-        choices=[],  # Choices set in __init__
+        choices=[],
         label="Room Option"
     )
 
@@ -44,7 +44,7 @@ class Frontpage(forms.ModelForm):
     )
 
     pool_name = forms.ChoiceField(
-        choices=[],  # Choices set in __init__
+        choices=[],
         label="Pool Option"
     )
 
@@ -70,8 +70,8 @@ class Frontpage(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(Frontpage, self).__init__(*args, **kwargs)
-        self.fields['room_name'].choices = RoomOption.objects.all().values_list('id', 'name')
-        self.fields['pool_name'].choices = PoolOption.objects.all().values_list('id', 'name')
+        self.fields['room_name'].choices = RoomOption.objects.all().values_list('id', 'room_name')
+        self.fields['pool_name'].choices = PoolOption.objects.all().values_list('id', 'pool_name')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -80,5 +80,8 @@ class Frontpage(forms.ModelForm):
 
         if end_time and start_time and end_time <= start_time:
             raise ValidationError("End time must be after start time.")
+
+        if TimeSlot.objects.filter(start_time = start_time, end_time = end_time).exists():
+            raise ValidationError("The selected time slot is already reserved.")
 
         return cleaned_data
