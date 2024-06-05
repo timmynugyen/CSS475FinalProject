@@ -64,11 +64,12 @@ def frontpage(request):
                 room_option = room_option
             )
             
+            #creates service object
             service = Service.objects.create()
             service.service_type.add(service_type)
             service.save()
 
-            #takes all info and creates reservation
+            #Adonyas: takes all info and creates reservation
             reservation = Reservation.objects.create(
                 customer = input_customer,
                 timeslot = input_timeslot,
