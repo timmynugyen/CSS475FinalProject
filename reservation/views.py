@@ -96,6 +96,7 @@ def submitted(request, reservation_id):
     context = {
         'total_cost': total_cost,
         'reservation': reservation,
+        'reservation_id': reservation_id,
         'message': "Bring the total cost amount when you come to your reservation. We accept cash, debit, and credit cards."
     }
 
@@ -111,3 +112,28 @@ def cost(request, reservation_id):
     return HttpResponse(
         f"The total cost for reservation {reservation_id} is ${total_cost:.2f}<br>"
         f"<a href='{reservations_page_url}'>Go back to reservations</a>")
+
+def cancel_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    
+    if request.method == 'POST':
+        # Delete related objects
+        timeslot = reservation.timeslot
+        customer = reservation.customer
+        
+        for service in reservation.service.all():
+            for service_type in service.service_type.all():
+                if service_type.pool_option:
+                    service_type.pool_option.delete()
+                if service_type.room_option:
+                    service_type.room_option.delete()
+                service_type.delete()
+            service.delete()
+        
+        reservation.delete()
+        timeslot.delete()
+        customer.delete()
+
+        return render(request, "cancel_success.html", {'reservation_id': reservation_id})
+    
+    return render(request, "cancel_confirm.html", {'reservation': reservation})

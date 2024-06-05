@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Reservation Submitted</title>
+    <title>Cancellation Successful</title>
     <link rel="stylesheet" href="{% static 'submitted.css' %}">
     <style>
         body {
@@ -45,21 +45,9 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Reservation Submitted</h1>
-        <p>Your reservation has been successfully created.</p>
-        <p>Total Cost: ${{ total_cost }}</p>
-        <p class="message">{{ message }}</p>
-        <p>Reservation Details:</p>
-        <ul>
-            <li>Reservation ID: {{reservation.id}}</li>
-            <li>Customer: {{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</li>
-            <li>Email: {{ reservation.customer.email }}</li>
-            <li>Phone Number: {{ reservation.customer.phone_number }}</li>
-            <li>Start Time: {{ reservation.timeslot.start_time }}</li>
-            <li>End Time: {{ reservation.timeslot.end_time }}</li>
-        </ul>
-    </div>
+    <h1>Cancellation Successful</h1>
+    <p>The reservation with ID {{ reservation_id }} has been successfully canceled.</p>
+    <a href="{% url 'frontpage' %}">Return to Frontpage</a>
 </body>
 
 </html>

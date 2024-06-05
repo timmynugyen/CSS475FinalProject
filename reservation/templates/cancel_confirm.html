@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Cancellation</title>
+    <link rel="stylesheet" href="{% static 'submitted.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .details {
+            margin: 20px 0;
+        }
+
+        .actions {
+            text-align: center;
+        }
+
+        .actions button,
+        .actions a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .actions button {
+            background-color: #dc3545;
+        }
+
+        .actions a {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Confirm Cancellation</h1>
+        <p>Are you sure you want to cancel the reservation for {{ reservation.customer.first_name }}
+            {{ reservation.customer.last_name }}?</p>
+        <div class="details">
+            <p>Reservation ID: {{ reservation.id }}</p>
+            <p>Customer Details:</p>
+            <ul>
+                <li>Name: {{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</li>
+                <li>Email: {{ reservation.customer.email }}</li>
+                <li>Phone Number: {{ reservation.customer.phone_number }}</li>
+            </ul>
+            <p>Reservation Details:</p>
+            <ul>
+                <li>Start Time: {{ reservation.timeslot.start_time }}</li>
+                <li>End Time: {{ reservation.timeslot.end_time }}</li>
+            </ul>
+        </div>
+        <div class="actions">
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Yes, Cancel Reservation</button>
+            </form>
+            <a href="{% url 'frontpage' %}">No, Go Back</a>
+        </div>
+    </div>
+</body>
+
+</html>
