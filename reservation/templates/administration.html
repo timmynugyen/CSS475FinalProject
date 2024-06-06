@@ -1,0 +1,152 @@
+<!-- Timmy: admin reservation management page -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Administration</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        .bop {
+            width: 80%;
+            margin: auto;
+            background-color: lightblue;
+            padding: 22px;
+            max-width: 1400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid white;
+            padding: 8px;
+        }
+
+        th {
+            background-color: lightseagreen;
+            text-align: left;
+        }
+
+        tr {
+            border-bottom: 2px solid white; 
+        }
+
+        tr:last-child {
+            border-bottom: none;
+        }
+        
+        .cancel-button {
+            max-width: 0px;
+            margin: -10px;
+            padding: 0px;
+        }
+
+        .cancel-box {
+            max-width: 10px;
+            padding-left: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bop">
+    <h1>All Reservations</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Reservation ID</th>
+                <th>Customer Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Room Name</th>
+                <th>Room Attendees</th>
+                <th>Room Special Orders</th>
+                <th>Pool Name</th>
+                <th>Pool Attendees</th>
+                <th>Pool Special Orders</th>
+                <th>Is Exclusive</th>
+                <th>Cancel Reservation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.id }}</td>
+                <td>{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
+                <td>{{ reservation.customer.email }}</td>
+                <td>{{ reservation.customer.phone_number }}</td>
+                <td>{{ reservation.timeslot.start_time }}</td>
+                <td>{{ reservation.timeslot.end_time }}</td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.room_option %}
+                    {{ service_type.room_option.room_name }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.room_option %}
+                    {{ service_type.room_option.attendees }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.room_option %}
+                    {{ service_type.room_option.special_orders }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.pool_option %}
+                    {{ service_type.pool_option.pool_name }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.pool_option %}
+                    {{ service_type.pool_option.attendees }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for service in reservation.service.all %}
+                    {% for service_type in service.service_type.all %}
+                    {% if service_type.pool_option %}
+                    {{ service_type.pool_option.special_orders }}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </td>
+                <td>{{ reservation.is_exclusive }}</td>
+                <td class="cancel-box">
+                    <form method="post" action="{% url 'cancel_reservation' reservation.id %}" class="cancel-button">
+                        {% csrf_token %}
+                        <button type="submit" class="cancel">Cancel</button>
+                    </form>     
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>

@@ -136,8 +136,12 @@ def cancel_reservation(request, reservation_id):
         
         reservation.delete()
         timeslot.delete()
-        customer.delete()
 
         return render(request, "cancel_success.html", {'reservation_id': reservation_id})
     
     return render(request, "cancel_confirm.html", {'reservation': reservation})
+
+# takes to administration page
+def administration(request):
+    reservations = Reservation.objects.all()
+    return render(request, 'administration.html', {'reservations': reservations})
