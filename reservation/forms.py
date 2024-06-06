@@ -144,6 +144,7 @@ class Frontpage(forms.ModelForm):
 
         if len(validation_errors) > 0:
             raise ValidationError( validation_errors )
+            validation_errors = []
 
         return cleaned_data
         
