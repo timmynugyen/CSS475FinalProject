@@ -76,7 +76,7 @@ class RoomOption(models.Model):
         return self.special_orders
     
     def __str__(self):
-        return f"room:{self.get_room_name_display()}, attendees:{self.getAttendees()}, timeslot:{self.getTimeSlot()}"
+        return f"room:{self.get_room_name_display()}, attendees:{self.get_attendees()}, timeslot:{self.get_timeslot()}"
 
 class PoolOption(models.Model):
     class PoolTypes(models.IntegerChoices):
