@@ -136,7 +136,6 @@ def cancel_reservation(request, reservation_id):
             service.delete()
         reservation.delete()
         timeslot.delete()
-        customer.delete()
 
         return render(request, "cancel_success.html", {'reservation_id': reservation_id})
     
