@@ -1,3 +1,4 @@
+<!-- Adonyas: HTML page for cancel sucess display -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -46,9 +47,9 @@
 
 <body>
     <div class="container">
-    <h1>Cancellation Successful</h1>
-    <p>The reservation with ID {{ reservation_id }} has been successfully canceled.</p>
-    <a href="{% url 'frontpage' %}">Return to Frontpage</a>
+        <h1>Cancellation Successful</h1>
+        <p>The reservation with ID {{ reservation_id }} has been successfully canceled.</p>
+        <a href="{% url 'frontpage' %}">Return to Frontpage</a>
     </div>
 </body>
 

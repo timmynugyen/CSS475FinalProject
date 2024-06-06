@@ -61,13 +61,13 @@ def frontpage(request):
                     special_orders = input_room_special_orders
                 )
             
-            #creates service_type object based on pool/room options
+            #Adonyas: creates service_type object based on pool/room options
             service_type = ServiceType.objects.create(
                 pool_option = pool_option,
                 room_option = room_option
             )
 
-            #creates service object
+             #Adonyas: creates service object
             service = Service.objects.create()
             service.service_type.add(service_type)
             service.save()
@@ -109,6 +109,8 @@ def submitted(request, reservation_id):
 def index(request):
     return render(request, "index.html")
 
+
+#Adonyas: added cost and cancel reservation feature
 def cost(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
     total_cost = reservation.cost()
