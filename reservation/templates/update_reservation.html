@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Update Reservation</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+
+<body>
+    <div class="top">
+        <h1>Update Reservation</h1>
+        <form method="post">
+            {% csrf_token %}
+            <p>
+                <label for="first_name">First Name:</label>
+                {{ form.first_name }}
+            </p>
+            <p>
+                <label for="last_name">Last Name:</label>
+                {{ form.last_name }}
+            </p>
+            <p>
+                <label for="email">Email:</label>
+                {{ form.email }}
+            </p>
+            <p>
+                <label for="phone_number">Phone Number:</label>
+                {{ form.phone_number }}
+            </p>
+            <p>
+                <label for="service_type">Select Service Type:</label>
+                {{ form.service_type }}
+            </p>
+            <p>
+                <label for="start_time">Start Time:</label>
+                {{ form.start_time }}
+            </p>
+            <p>
+                <label for="end_time">End Time:</label>
+                {{ form.end_time }}
+            </p>
+            <p>
+                <label for="room_name">Room Option:</label>
+                {{ form.room_name }}
+            </p>
+            <p>
+                <label for="room_attendees">Room Attendees:</label>
+                {{ form.room_attendees }}
+            </p>
+            <p>
+                <label for="room_special_orders">Room Special Orders:</label>
+                {{ form.room_special_orders }}
+            </p>
+            <p>
+                <label for="pool_name">Pool Option:</label>
+                {{ form.pool_name }}
+            </p>
+            <p>
+                <label for="pool_attendees">Pool Attendees:</label>
+                {{ form.pool_attendees }}
+            </p>
+            <p>
+                <label for="pool_special_orders">Pool Special Orders:</label>
+                {{ form.pool_special_orders }}
+            </p>
+            <p>
+                <label for="is_exclusive">Exclusive Reservation:</label>
+                {{ form.is_exclusive }}
+            </p>
+            <button type="submit">Update Reservation</button>
+        </form>
+    </div>
+</body>
+
+</html>

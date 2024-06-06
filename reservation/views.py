@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from .models import Reservation, Customer, TimeSlot, PoolOption, ServiceType, Service, RoomOption
 from .forms import Frontpage
+from django.contrib import messages
 
 #Timmy: shows frontpage and gathers form information
 def frontpage(request):
@@ -145,3 +146,98 @@ def cancel_reservation(request, reservation_id):
 def administration(request):
     reservations = Reservation.objects.all()
     return render(request, 'administration.html', {'reservations': reservations})
+
+
+
+def update_reservation(request, reservation_id):
+    existing_reservation = get_object_or_404(Reservation, id=reservation_id)
+    
+    if request.method == 'POST':
+        form = Frontpage(request.POST)
+        if form.is_valid():
+            input_first_name = form.cleaned_data.get('first_name')
+            input_last_name = form.cleaned_data.get('last_name')
+            input_email = form.cleaned_data.get('email')
+            input_phone_number = form.cleaned_data.get('phone_number')
+            service_types = form.cleaned_data.get('service_type')
+            start_time = form.cleaned_data.get('start_time')
+            end_time = form.cleaned_data.get('end_time')
+            room_name = form.cleaned_data.get('room_name')
+            input_room_attendees = form.cleaned_data.get('room_attendees')
+            input_room_special_orders = form.cleaned_data.get('room_special_orders')
+            pool_name = form.cleaned_data.get('pool_name')
+            input_pool_attendees = form.cleaned_data.get('pool_attendees')
+            input_pool_special_orders = form.cleaned_data.get('pool_special_orders')
+            input_is_exclusive = form.cleaned_data.get('is_exclusive')
+
+            input_customer, _ = Customer.objects.get_or_create(
+                email=input_email,
+                defaults={
+                    'first_name': input_first_name,
+                    'last_name': input_last_name,
+                    'phone_number': input_phone_number
+                }
+            )
+
+            update_existing_reservation(existing_reservation, input_customer, start_time, end_time, service_types,
+                                        room_name, input_room_attendees, input_room_special_orders, pool_name,
+                                        input_pool_attendees, input_pool_special_orders, input_is_exclusive)
+            messages.success(request, 'Reservation updated successfully!')
+            return redirect('submitted', reservation_id=existing_reservation.id)
+        else:
+            errors = form.errors.get('__all__', [])
+            return render(request, 'error.html', {'errors': errors})
+    else:
+        form = Frontpage(instance=existing_reservation.customer)
+        
+    return render(request, 'update_reservation.html', {'form': form, 'reservation_id': reservation_id})
+
+def update_existing_reservation(existing_reservation, customer, start_time, end_time, service_types, room_name,
+                                input_room_attendees, input_room_special_orders, pool_name, input_pool_attendees,
+                                input_pool_special_orders, input_is_exclusive):
+    input_timeslot = TimeSlot.objects.create(start_time=start_time, end_time=end_time)
+
+    for service in existing_reservation.service.all():
+        for service_type in service.service_type.all():
+            if service_type.pool_option:
+                service_type.pool_option.delete()
+            if service_type.room_option:
+                service_type.room_option.delete()
+            service_type.delete()
+        service.delete()
+
+    pool_option = None
+    if 'pool' in service_types:
+        pool_option = PoolOption.objects.create(
+            pool_name=pool_name,
+            attendees=input_pool_attendees or 0,
+            timeslot=input_timeslot,
+            special_orders=input_pool_special_orders
+        )
+
+    room_option = None
+    if 'room' in service_types:
+        room_option = RoomOption.objects.create(
+            room_name=room_name,
+            attendees=input_room_attendees or 0,
+            timeslot=input_timeslot,
+            special_orders=input_room_special_orders
+        )
+
+    service_type = ServiceType.objects.create(
+        pool_option=pool_option,
+        room_option=room_option
+    )
+
+    service = Service.objects.create()
+    service.service_type.add(service_type)
+    service.save()
+
+    existing_reservation.customer = customer
+    existing_reservation.timeslot = input_timeslot
+    existing_reservation.is_exclusive = input_is_exclusive
+    existing_reservation.save()
+
+    existing_reservation.service.clear()
+    existing_reservation.service.add(service)
+    existing_reservation.save()
