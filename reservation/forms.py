@@ -94,7 +94,10 @@ class Frontpage(forms.ModelForm):
         #checks for invalid start/end times
         if end_time and start_time and end_time <= start_time:
             raise ValidationError("End time must be after start time.")
-
+        
+        if start_time.date() != end_time.date():
+            raise ValidationError("Reservation time must be on same day")
+        
         #checks for existing booking during timeslot
         if TimeSlot.objects.filter(start_time = start_time, end_time = end_time).exists():
             raise ValidationError("The selected time slot is already reserved.")
