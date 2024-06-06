@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from .models import Customer, RoomOption, PoolOption, TimeSlot
 from datetime import datetime
 
-#Timmy: frontpage form class, Rohan: validation checks
+#Timmy: frontpage form class, Rohan: validation checks, Caleb: fix bug with timeslots
 class Frontpage(forms.ModelForm):
     ServiceChoices = [
         ('pool', 'Pool'),
@@ -136,7 +136,7 @@ class Frontpage(forms.ModelForm):
             )  
         
         # check for existing booking during timeslot
-        overlapping_times = TimeSlot.objects.filter(start_time__lte= start_time, end_time__gte= end_time)
+        overlapping_times = TimeSlot.objects.filter(start_time__lt= end_time, end_time__gt= start_time)
         if overlapping_times.exists():
             overlap = overlapping_times.first()
             validation_errors.append(
