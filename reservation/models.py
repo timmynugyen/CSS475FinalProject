@@ -66,17 +66,17 @@ class RoomOption(models.Model):
         if self.attendees > max_attendance:
             raise ValidationError(f"Attendees for {self.get_room_name_display()} cannot exceed {max_attendance}.")
         
-    def getAttendees():
-        return RoomOption.attendees
+    def get_attendees(self):
+        return self.attendees
     
-    def getTimeSlot():
-        return RoomOption.timeslot
+    def get_timeslot(self):
+        return self.timeslot
     
-    def getSpecialOrder():
-        return RoomOption.special_orders
+    def getSpecialOrder(self):
+        return self.special_orders
     
     def __str__(self):
-        return f"{self.get_room_name_display()}"
+        return f"room:{self.get_room_name_display()}, attendees:{self.getAttendees()}, timeslot:{self.getTimeSlot()}"
 
 class PoolOption(models.Model):
     class PoolTypes(models.IntegerChoices):

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from .models import Customer, RoomOption, PoolOption, TimeSlot
 from datetime import datetime
 
-#Timmy: frontpage form class
+#Timmy: frontpage form class, Rohan: validation checks
 class Frontpage(forms.ModelForm):
     ServiceChoices = [
         ('pool', 'Pool'),
@@ -93,9 +93,10 @@ class Frontpage(forms.ModelForm):
         end_time = cleaned_data.get('end_time')
         phone_number = cleaned_data.get('phone_number')
 
-        #Rohan validation checks
+        # list of validation checks
         validation_errors = []
         
+        # check phone number
         if 5 > len(phone_number) or not phone_number.isdigit():
             validation_errors.append(
                 ValidationError(
@@ -104,7 +105,7 @@ class Frontpage(forms.ModelForm):
                 )
             )
 
-        #checks for invalid start/end times
+        # check for invalid start/end times
         if end_time and start_time and end_time <= start_time:
             validation_errors.append(
                 ValidationError(
@@ -115,30 +116,37 @@ class Frontpage(forms.ModelForm):
         if start_time.date() != end_time.date():
             validation_errors.append(
                 ValidationError(
-                    ("Reservation time must be on same day.")
+                    ("Reservation times must be on same date.")
                 )
             )
 
         if start_time.year < 2020:
             validation_errors.append(
                 ValidationError(
-                    ("%(start)s is not a valid year."),
+                    ("%(start)s is not a valid year, put a year after 2020"),
                     params={"start": start_time.year}
                 )
             )
         elif end_time.year > 2120:
             validation_errors.append(
                 ValidationError(
-                    ("%(end)s is not a valid year."),
+                    ("%(end)s is not a valid year, put a year before 2050"),
                     params={"end":end_time.year}
                 )
             )  
         
-        #checks for existing booking during timeslot
-        if TimeSlot.objects.filter(start_time__gte= start_time, end_time__lte= end_time).exists():
+        # check for existing booking during timeslot
+        overlapping_times = TimeSlot.objects.filter(start_time__lte= start_time, end_time__gte= end_time)
+        if overlapping_times.exists():
+            overlap = overlapping_times.first()
             validation_errors.append(
                 ValidationError(
-                    ("This time overlaps with a time that has already been reserved.")
+                    ("%(date)s is already booked, from %(start)s to %(end)s."),
+                    params={
+                        "date":overlap.start_time.date(),
+                        "start":overlap.start_time.strftime("%I:%M %p"),
+                        "end":overlap.end_time.strftime("%I:%M %p")
+                    }
                 )
             )
 
