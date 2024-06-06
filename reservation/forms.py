@@ -99,4 +99,5 @@ class Frontpage(forms.ModelForm):
         if TimeSlot.objects.filter(start_time = start_time, end_time = end_time).exists():
             raise ValidationError("The selected time slot is already reserved.")
 
+
         return cleaned_data

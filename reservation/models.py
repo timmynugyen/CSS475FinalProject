@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 class Customer(models.Model):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
-    email = models.EmailField(max_length=40, unique=True)
+    email = models.EmailField(max_length=40)
     phone_number = models.CharField(max_length=10, null=True, blank=True)
 
     def getFirstName(self):
