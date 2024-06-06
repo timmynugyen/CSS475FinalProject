@@ -25,16 +25,14 @@ def frontpage(request):
             input_is_exclusive = form.cleaned_data.get('is_exclusive')
 
             #Checks if email already associated with existing customer, otherwise creates new customer
-            existing_customer = Customer.objects.filter(email = input_email).first()
-            if existing_customer:
-                input_customer = existing_customer
-            else:  
-                input_customer = Customer.objects.get_or_create(
-                    first_name = input_first_name,
-                    last_name = input_last_name,
-                    email = input_email,
-                    defaults = {'phone_number': input_phone_number}
-                )
+            input_customer, created = Customer.objects.get_or_create(
+                email=input_email,
+                defaults={
+                    'first_name': input_first_name,
+                    'last_name': input_last_name,
+                    'phone_number': input_phone_number
+                }
+            )
 
             #Creates timeslot object
             input_timeslot = TimeSlot.objects.create(start_time=start_time, end_time=end_time)
