@@ -98,7 +98,7 @@ class Frontpage(forms.ModelForm):
         if start_time.date() != end_time.date():
             raise ValidationError("Reservation time must be on same day.")
 
-        if TimeSlot.objects.filter(start_time__lte= "2020-01-01T00:00", end_time__lte= "2120-01-01T00:00").exists():
+        if TimeSlot.objects.filter(start_time__lte= "2020-01-01T00:00", end_time__gte= "2120-01-01T00:00").exists():
             raise ValidationError("Invalid date.")
         
         #checks for existing booking during timeslot
