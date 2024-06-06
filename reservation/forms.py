@@ -43,7 +43,7 @@ class Frontpage(forms.ModelForm):
         label="Room Attendees"
     )
 
-    #createse room_special_order form
+    #creates room_special_order form
     room_special_orders = forms.CharField(
         required=False,
         widget=forms.Textarea,
@@ -96,11 +96,20 @@ class Frontpage(forms.ModelForm):
             raise ValidationError("End time must be after start time.")
         
         if start_time.date() != end_time.date():
-            raise ValidationError("Reservation time must be on same day")
+            raise ValidationError("Reservation time must be on same day.")
+
+        if TimeSlot.objects.filter(start_time__lte= "2020-01-01T00:00", end_time__lte= "2120-01-01T00:00").exists():
+            raise ValidationError("Invalid date.")
         
         #checks for existing booking during timeslot
         if TimeSlot.objects.filter(start_time = start_time, end_time = end_time).exists():
             raise ValidationError("The selected time slot is already reserved.")
+        
+        #check for overlapping timeslot
+        if TimeSlot.objects.filter(start_time__gte= start_time, end_time__lte= end_time).exists():
+            raise ValidationError("This time slot is overlapping with another.")
+        
+        
 
 
         return cleaned_data
