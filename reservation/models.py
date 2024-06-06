@@ -67,17 +67,17 @@ class RoomOption(models.Model):
         if self.attendees > max_attendance:
             raise ValidationError(f"Attendees for {self.get_room_name_display()} cannot exceed {max_attendance}.")
         
-    def getAttendees(self):
+    def get_attendees(self):
         return self.attendees
     
-    def getTimeSlot(self):
+    def get_timeslot(self):
         return self.timeslot
     
-    def getSpecialOrder(self):
+    def get_specialorder(self):
         return self.special_orders
     
     def __str__(self):
-        return f"room:{self.get_room_name_display()}, attendees:{self.get_attendees()}, timeslot:{self.get_timeslot()}"
+        return f"Room ID: {self.id}, Name: {self.get_room_name_display()}, Start Time: {self.timeslot.start_time}, End Time: {self.timeslot.end_time}"
 
 class PoolOption(models.Model):
     class PoolTypes(models.IntegerChoices):
@@ -107,39 +107,52 @@ class PoolOption(models.Model):
         if self.attendees > max_attendance:
             raise ValidationError(f"Attendees for {self.get_pool_name_display()} cannot exceed {max_attendance}.")
         
-    def getAttendees(self):
+    def get_attendees(self):
         return self.attendees
     
-    def getTimeSlot(self):
+    def get_timeslot(self):
         return self.timeslot
     
-    def getSpecialOrder(self):
+    def get_specialorder(self):
         return self.special_orders
     
     def __str__(self):
-        return f"{self.get_pool_name_display()}"
+        return f"Pool ID: {self.id}, Name: {self.get_pool_name_display()}, Start Time: {self.timeslot.start_time}, End Time: {self.timeslot.end_time}"
 
 class ServiceType(models.Model):
     room_option = models.ForeignKey(RoomOption, on_delete=models.CASCADE, null=True, blank=True)   
     pool_option = models.ForeignKey(PoolOption, on_delete=models.CASCADE, null=True, blank=True)
+
+    def getid():
+        return ServiceType.id
     
     def __str__(self):
-        return f"Service ID: {self.id}, Service Type Room: {self.room_option}, Pool: {self.pool_option}"
+        room_id = self.room_option.id if self.room_option else "None"
+        pool_id = self.pool_option.id if self.pool_option else "None"
+        return f"ServiceType ID: {self.id}, Room ID: {room_id}, Pool ID: {pool_id}"
+
+class Service(models.Model):
+    service_type = models.ManyToManyField(ServiceType)
+
+    def __str__(self):
+        return f"Service ID: {self.id}"
+    
 
 class Reservation(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     timeslot = models.ForeignKey(TimeSlot, on_delete=models.CASCADE)
     is_exclusive = models.BooleanField(default=False)
-    # service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, null=True)
-    service_type = models.ManyToManyField(ServiceType)
+    service = models.ManyToManyField(Service)
+    
 
-    def cost(self): # TODO - cost should never return zero, this should be prevented
-        total_cost = 0 
-        for service_type in self.service_type.all():
-            if service_type.room_option:
-                total_cost += service_type.room_option.attendees * 20
-            if service_type.pool_option:
-                total_cost += service_type.pool_option.attendees * 20
+    def cost(self):
+        total_cost = 0
+        for service in self.service.all():
+            for service_type in service.service_type.all():
+                if service_type.room_option:
+                    total_cost += service_type.room_option.attendees * 20
+                if service_type.pool_option:
+                    total_cost += service_type.pool_option.attendees * 20
         if self.is_exclusive:
             total_cost *= 1.5  # Apply the 1.5 multiplier for exclusive reservations
         return total_cost

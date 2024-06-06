@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
-from .models import Reservation, Customer, TimeSlot, PoolOption, ServiceType, RoomOption
+from .models import Reservation, Customer, TimeSlot, PoolOption, ServiceType, Service, RoomOption
 from .forms import Frontpage
 
 #Timmy: shows frontpage and gathers form information
@@ -67,13 +67,18 @@ def frontpage(request):
                 room_option = room_option
             )
 
+            #creates service object
+            service = Service.objects.create()
+            service.service_type.add(service_type)
+            service.save()
+
             #Adonyas: takes all info and creates reservation
             reservation = Reservation.objects.create(
                 customer = input_customer,
                 timeslot = input_timeslot,
                 is_exclusive = input_is_exclusive
             )
-            reservation.service_type.add(service_type)
+            reservation.service.add(service)
             reservation.save()
             
             return redirect('submitted', reservation_id=reservation.id)
@@ -118,18 +123,18 @@ def cancel_reservation(request, reservation_id):
     if request.method == 'POST':
         # Delete related objects
         timeslot = reservation.timeslot
-        customer = reservation.customer
         
-        for service_type in service.service_type.all():
-            if service_type.pool_option:
-                service_type.pool_option.delete()
-            if service_type.room_option:
-                service_type.room_option.delete()
-            service_type.delete()
-        
+        for service in reservation.service.all():
+            for service_type in service.service_type.all():
+                if service_type.pool_option:
+                    service_type.pool_option.delete()
+                if service_type.room_option:
+                    service_type.room_option.delete()
+                service_type.delete()
+            service.delete()
         reservation.delete()
         timeslot.delete()
-        customer.delete()
+    
 
         return render(request, "cancel_success.html", {'reservation_id': reservation_id})
     
