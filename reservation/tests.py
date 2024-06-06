@@ -15,10 +15,10 @@ class FrontpageFormTest(TestCase):
             'service_type': ['pool', 'room'],
             'start_time': datetime.now(),
             'end_time': datetime.now() + timedelta(hours=2),
-            'room_name': 'Conference',
+            'room_name': 'A',
             'room_attendees': 10,
             'room_special_orders': 'Extra chairs',
-            'pool_name': 'Olympic',
+            'pool_name': 'B',
             'pool_attendees': 15,
             'pool_special_orders': 'Extra lifeguard',
         }
