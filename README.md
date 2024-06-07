@@ -1,5 +1,4 @@
-# CSS475FinalProject
-Pool Reservation
+# CSS475FinalProject | Pool Reservation
 
 ## Running the code
 Here is how to run the the database locally:
